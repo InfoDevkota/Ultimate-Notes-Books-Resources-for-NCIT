@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="logo.png" type="image/png">
+    <title>NCIT Note Search</title>
+    <script src="files.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body style="display: flex; flex-flow: column; min-height: calc(100vh - 40px); max-width: 500px;">
+    <div style="display: flex; flex-flow: column; min-height: calc(100vh - 40px); max-width: 500px;">
+        <h1>Search Notes</h1>
+        <input id="inputToSearch" type="text"> <br>
+        <span id="searchingText" style="display: none;">
+            Searching
+            (<span id="itemSearched"></span>/<span id="totalItem"></span>)
+        </span>
+        <button class="button" type="button" id="searchButton" onclick="search()">Search</button>
+        <h1 id="word"></h1>
+        <div id="result">
+            <!-- <div class="aNote">
+            <div class="noteDetails">
+                <div>
+                    Title
+                </div>
+                <div>
+                    <span class="tag">a</span>
+                </div>
+            </div>
+            <div>
+                <a href="">Download</a>
+                
+            </div>
+
+        </div> -->
+
+        </div>
+
+        <div style="flex: 2;">
+        </div>
+
+        <div>
+            <br>
+            Resources from <a
+                href="https://github.com/theonlyNischal/Ultimate-Notes-Books-Resources-for-NCIT">Ultimate-Notes-Books-Resources-for-NCIT</a>
+        </div>
+    </div>
+
+</body>
+
+<div style="width: 100%;">
+    <br>
+
+    As the above repo is community driven, it may contains copyright contents. We respect the rights of copyright
+    owners, If you are a copyright owner, or are authorized to act on behalf of one, let us know, we will remove it.
+</div>
+
+<script>
+
+    tagsEdit = document.getElementById("inputToSearch")
+
+    wordView = document.getElementById("word");
+    resultView = document.getElementById("result");
+
+    function noteFound(item) {
+        // console.log(item);
+
+        const aNoteDiv = document.createElement("div");
+        aNoteDiv.classList.add("aNote");
+
+        const aNoteDetails = document.createElement("div");
+        aNoteDetails.classList.add("noteDetails");
+
+        const noteTitleDiv = document.createElement("div");
+        const newContent = document.createTextNode(item.title);
+        noteTitleDiv.classList.add("noteTitle")
+        noteTitleDiv.appendChild(newContent);
+
+        const noteTagDiv = document.createElement("div");
+        noteTagDiv.classList.add("tag");
+
+        const tagContent = document.createElement("span");
+        // tagContent.classList.add("tag");
+        let tags = "";
+        for (let i = 0; i < item.tags.length; i++) {
+            if (i == 0) {
+                tags = item.tags[i];
+            } else {
+                tags = tags + ", " + item.tags[i];
+            }
+        }
+        tagContent.innerText = tags;
+        noteTagDiv.appendChild(tagContent);
+
+        // pathContent = document.createElement("span");
+        // pathContent.classList.add("tag");
+        // pathContent.innerText= item.path
+        // noteTagDiv.appendChild(pathContent);
+
+        aNoteDetails.appendChild(noteTitleDiv)
+        aNoteDetails.appendChild(noteTagDiv)
+
+        const aNoteDownloadDiv = document.createElement("div");
+        const downloadLink = document.createElement("a");
+        downloadLink.setAttribute("href", "/" + item.path);
+        downloadLink.setAttribute("download", "download");
+        downloadLink.innerText = "Download"
+        aNoteDownloadDiv.appendChild(downloadLink)
+
+        aNoteDiv.appendChild(aNoteDetails)
+        aNoteDiv.appendChild(aNoteDownloadDiv)
+
+        // resultView.insertBefore(aNoteDiv, resultView.childNodes[0]);
+        resultView.appendChild(aNoteDiv);
+    }
+
+
+    function forEachWithCallback(callback) {
+        const arrayCopy = this;
+        let index = 0;
+        const next = () => {
+            if (arrayCopy.length > 0) {
+                callback(arrayCopy[index], index, next);
+                index++;
+            }
+        }
+        next();
+    }
+
+    Array.prototype.forEachWithCallback = forEachWithCallback;
+    let notesSearching = [];
+
+
+    function asyncSearch(term) {
+        notes.forEachWithCallback((el, i, next) => {
+            setTimeout(() => {
+                // console.log(el);
+                // let path = el.path;
+
+                // let terms = term.split(" ");
+
+                // for (let j = 0; j < terms.length; j++) {
+                //     let pattern = new RegExp(terms[j], 'i');
+                //     let match = path.search(pattern);
+                //     if (match > 0) {
+                //         // console.log("Found");
+                //         noteFound(el)
+                //         break;
+                //     }
+                // }
+
+                //next approach
+                if (el.tags) {
+                    for (let j = 0; j < el.tags.length; j++) {
+                        let tag = el.tags[j];
+                        let pattern = new RegExp(term, 'i');
+                        let match = tag.match(pattern);
+
+                        // console.log(match);
+                        // console.log(tag);
+                        // console.log(pattern);
+                        if (match) {
+                            if (match.length > 0) {
+                                console.log(tag);
+                                // console.log("Found");
+                                noteFound(el)
+                                break;
+                            }
+                        }
+                    }
+                }
+
+
+                if (i == notes.length - 1) {
+                    console.log("Last");
+                    searchComplete();
+                } else {
+                    // console.log(i);
+                    document.getElementById("itemSearched").innerText = i;
+                }
+                next();
+
+            }, 0);
+        });
+
+    }
+
+    function search() {
+        while (resultView.lastElementChild) {
+            resultView.removeChild(resultView.lastElementChild);
+        }
+        asyncSearch(tagsEdit.value)
+        document.getElementById("searchButton").disabled = true;
+        document.getElementById("searchButton").classList.remove("button");
+        document.getElementById("searchButton").classList.add("button-disable");
+        document.getElementById("searchingText").style.display = "block";
+        document.getElementById("totalItem").innerText = notes.length;
+
+    }
+
+    function searchComplete() {
+        document.getElementById("searchButton").disabled = false;
+        document.getElementById("searchingText").style.display = "none";
+        document.getElementById("searchButton").classList.remove("button-disable");
+        document.getElementById("searchButton").classList.add("button");
+
+    }
+
+</script>
+
+</html>

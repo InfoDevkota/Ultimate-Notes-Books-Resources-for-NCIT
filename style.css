@@ -1,0 +1,92 @@
+body {
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 50px;
+}
+
+h4 {
+    text-align: left;
+}
+
+body {
+    font: 20px Helvetica, sans-serif;
+    color: #333;
+    /* max-width: 500px; */
+    margin: 0px auto;
+}
+
+.content {
+    display: block;
+    text-align: left;
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+a {
+    color: #dc8100;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #333;
+    text-decoration: none;
+}
+
+input[type=text], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.button {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.button-disable {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor:not-allowed;
+}
+
+.aNote{
+    display: flex; flex-direction: row; align-items: center;
+    border: #dc8100;
+    border-style: solid;
+    margin: 5px;
+    padding: 5px;
+}
+
+.noteDetails{
+    flex-grow: 1; display: flex; flex-direction: column;
+    align-items: left;
+    text-align: left;
+}
+
+.noteTitle{
+    align-items: left;
+}
+
+.tag{
+    color: rgba(0, 0, 0, 0.46);
+    overflow-wrap: break-word;
+    font-size: 10px;
+}
